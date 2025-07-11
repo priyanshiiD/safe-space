@@ -13,8 +13,16 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Middleware
-app.use(cors());
+// CORS setup for Vercel and localhost
+const allowedOrigins = [
+  'https://safe-space-sooty.vercel.app',
+  'http://localhost:5173'
+];
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Routes
