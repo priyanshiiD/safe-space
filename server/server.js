@@ -13,8 +13,9 @@ const app = express();
 // CORS setup for Vercel and localhost
 const allowedOrigins = [
   'https://safe-space-sooty.vercel.app',
-  'http://localhost:5173',
-  'https://safe-space-frontend.vercel.app'
+  'https://safe-space-frontend.vercel.app',
+  'https://safe-space.vercel.app',
+  'http://localhost:5173'
 ];
 app.use(cors({
   origin: allowedOrigins,
