@@ -75,15 +75,15 @@ const SafetyMap: React.FC = () => {
           address: "Main Street & 5th Ave",
           severity: "medium",
           createdAt: "2 hours ago"
-        },
-        {
+    },
+    {
           id: '2',
           reportType: "unsafe_area",
           address: "Park Avenue",
           severity: "high",
           createdAt: "4 hours ago"
-        },
-        {
+    },
+    {
           id: '3',
           reportType: "well_lit",
           address: "University Campus",
@@ -258,23 +258,23 @@ const SafetyMap: React.FC = () => {
                   <p className="text-gray-500 mt-2">Loading reports...</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {recentReports.map((report) => (
-                    <div key={report.id} className="border-l-4 border-purple-500 pl-4 py-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          report.severity === 'high' ? 'bg-red-100 text-red-600' :
-                          report.severity === 'medium' ? 'bg-yellow-100 text-yellow-600' :
-                          'bg-green-100 text-green-600'
-                        }`}>
+              <div className="space-y-4">
+                {recentReports.map((report) => (
+                  <div key={report.id} className="border-l-4 border-purple-500 pl-4 py-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        report.severity === 'high' ? 'bg-red-100 text-red-600' :
+                        report.severity === 'medium' ? 'bg-yellow-100 text-yellow-600' :
+                        'bg-green-100 text-green-600'
+                      }`}>
                           {report.reportType.replace('_', ' ')}
-                        </span>
+                      </span>
                         <span className="text-xs text-gray-500">{report.createdAt}</span>
-                      </div>
-                      <p className="text-sm text-gray-700">{report.address}</p>
                     </div>
-                  ))}
-                </div>
+                      <p className="text-sm text-gray-700">{report.address}</p>
+                  </div>
+                ))}
+              </div>
               )}
               
               <button 

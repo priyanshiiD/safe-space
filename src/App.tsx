@@ -10,14 +10,14 @@ import { AuthProvider } from './contexts/AuthContext';
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-red-50">
-        <Header />
-        <Hero />
-        <EmergencyButton />
-        <Features />
-        <SafetyMap />
-        <Footer />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-red-50">
+      <Header />
+      <Hero />
+      <EmergencyButton />
+      <Features />
+      <SafetyMap />
+      <Footer />
+    </div>
     </AuthProvider>
   );
 }
