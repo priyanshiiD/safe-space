@@ -38,6 +38,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'SafeSpace Backend API', status: 'running' });
 });
 
+// Railway health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 const PORT = process.env.PORT || 5000;
 
 // Start server with better error handling
