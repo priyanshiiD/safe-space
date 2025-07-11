@@ -15,6 +15,7 @@ const allowedOrigins = [
   'https://safe-space-sooty.vercel.app',
   'https://safe-space-frontend.vercel.app',
   'https://safe-space.vercel.app',
+  'https://safespace.vercel.app',
   'http://localhost:5173'
 ];
 app.use(cors({
