@@ -232,7 +232,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support or questions, please create an issue in this repository or contact the project maintainer.
+For support, please create an issue in this repository or contact the project maintainer.
 
 ---
 
