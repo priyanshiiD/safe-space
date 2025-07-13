@@ -238,4 +238,4 @@ For support, please create an issue in this repository or contact the project ma
 
 **Built with ❤️ for women's safety and community support**
 
-*Last updated: July 2024*
+*Last updated: July 2025*
