@@ -32,7 +32,19 @@ const EmergencyButton: React.FC = () => {
       const position = await getCurrentPosition();
       const address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude);
       
-      // Send emergency alert
+      // Show confirmation dialog first
+      const confirmed = window.confirm(
+        'Are you sure you want to send an emergency alert?\n\n' +
+        'This will notify emergency contacts and authorities with your location.'
+      );
+      
+      if (!confirmed) {
+        setIsLoading(false);
+        setIsEmergency(false);
+        return;
+      }
+      
+      // Send emergency alert to backend
       await SafetyService.sendEmergencyAlert(
         { 
           latitude: position.coords.latitude, 
@@ -41,7 +53,27 @@ const EmergencyButton: React.FC = () => {
         address
       );
       
-      alert('Emergency alert sent to your contacts and authorities!');
+      // Show success message
+      alert(
+        '🚨 EMERGENCY ALERT SENT!\n\n' +
+        'Your location and emergency alert have been sent to:\n' +
+        '• Emergency contacts\n' +
+        '• Local authorities\n' +
+        '• SafeSpace community\n\n' +
+        'Help is on the way. Stay safe!'
+      );
+      
+      // Log for developer monitoring (you can check browser console)
+      console.log('🚨 EMERGENCY ALERT TRIGGERED:', {
+        timestamp: new Date().toISOString(),
+        location: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        },
+        address: address,
+        userAgent: navigator.userAgent
+      });
+      
     } catch (error) {
       console.error('Error sending emergency alert:', error);
       alert('Failed to send emergency alert. Please try again or call emergency services directly.');

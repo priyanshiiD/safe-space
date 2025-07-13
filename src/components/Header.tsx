@@ -63,6 +63,14 @@ const Header: React.FC = () => {
             <button className="p-2 text-gray-600 hover:text-rose-600 transition-colors">
               <Settings size={20} />
             </button>
+            {/* Developer Monitor Link */}
+            <a 
+              href="/monitor" 
+              className="text-xs text-gray-400 hover:text-rose-600 transition-colors"
+              title="Emergency Monitor (Developer)"
+            >
+              Monitor
+            </a>
               {user ? (
                 <div className="flex items-center space-x-3">
                   <div className="text-sm text-gray-700">
