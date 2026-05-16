@@ -10,17 +10,25 @@ dotenv.config();
 
 const app = express();
 
-// CORS setup for Vercel and localhost
+// Allow local dev plus all Vercel preview/production subdomains.
 const allowedOrigins = [
-  'https://safe-space-sooty.vercel.app',
-  'https://safe-space-frontend.vercel.app',
-  'https://safe-space.vercel.app',
-  'https://safespace.vercel.app',
-  'https://safe-space-delta.vercel.app',
   'http://localhost:5173'
 ];
+
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests without an Origin header (e.g. health checks, curl, Postman).
+    if (!origin) return callback(null, true);
+
+    const isAllowedExplicit = allowedOrigins.includes(origin);
+    const isVercelApp = /^https:\/\/.*\.vercel\.app$/.test(origin);
+
+    if (isAllowedExplicit || isVercelApp) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 
