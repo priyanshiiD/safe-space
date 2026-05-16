@@ -6,14 +6,14 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green.svg)](https://www.mongodb.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.3-purple.svg)](https://tailwindcss.com/)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black.svg)](https://vercel.com/)
-[![Railway](https://img.shields.io/badge/Backend%20on-Railway-blue.svg)](https://railway.app/)
+[![Render](https://img.shields.io/badge/Backend%20on-Render-46E3B7.svg)](https://render.com/)
 
 > **A comprehensive women's safety platform providing real-time emergency assistance, location-based safety reports, and community support.**
 
 ## 🌟 Live Demo
 
 - **Frontend**: [https://safe-space-delta.vercel.app/](https://safe-space-delta.vercel.app/)
-- **Backend API**: [https://safe-space-production-dd53.up.railway.app/](https://safe-space-production-dd53.up.railway.app/)
+- **Backend API**: [https://safe-space-6huo.onrender.com/](https://safe-space-6huo.onrender.com/)
 
 ## 🎯 Project Overview
 
@@ -47,7 +47,7 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
 
 ### DevOps & Deployment
 - **Vercel** for frontend hosting and CI/CD
-- **Railway** for backend hosting and database
+- **Render** for backend hosting
 - **GitHub** for version control and collaboration
 - **Environment Variables** for secure configuration
 
@@ -81,8 +81,14 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
    
    Create `.env` file in the `server` directory:
    ```env
-   MONGODB_URI=your_mongodb_connection_string
+   MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret_key
+   SMTP_HOST=your_smtp_host
+   SMTP_PORT=587
+   SMTP_USER=your_smtp_user
+   SMTP_PASS=your_smtp_password
+   SMTP_FROM="SafeSpace <no-reply@example.com>"
+   APP_BASE_URL=http://localhost:5173
    PORT=5000
    NODE_ENV=development
    ```
@@ -134,6 +140,8 @@ safe-space/
 ### Authentication
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User authentication
+- `POST /api/auth/forgot-password` - Request password reset email
+- `POST /api/auth/reset-password` - Reset password with token
 
 ### Safety Features
 - `POST /api/safety/reports` - Create safety report
@@ -163,6 +171,7 @@ safe-space/
 
 - **JWT Authentication** - Secure user sessions
 - **Password Hashing** - bcrypt encryption
+- **Password Reset** - Secure reset tokens with email delivery
 - **CORS Protection** - Configured for production domains
 - **Input Validation** - Server-side data validation
 - **Environment Variables** - Secure configuration management
@@ -183,12 +192,11 @@ safe-space/
    - `VITE_API_URL`: Backend API URL
 3. Automatic deployment on push to main branch
 
-### Backend (Railway)
-1. Connect GitHub repository to Railway
+### Backend (Render)
+1. Connect GitHub repository to Render
 2. Set environment variables:
-   - `MONGODB_URI`: MongoDB connection string
+   - `MONGO_URI`: MongoDB connection string
    - `JWT_SECRET`: JWT secret key
-   - `PORT`: Server port
 3. Automatic deployment on push to main branch
 
 ## 🧪 Testing
@@ -204,10 +212,10 @@ safe-space/
 ### API Testing
 ```bash
 # Test health endpoint
-curl https://safe-space-production-dd53.up.railway.app/health
+curl https://safe-space-6huo.onrender.com/health
 
 # Test API health
-curl https://safe-space-production-dd53.up.railway.app/api/health
+curl https://safe-space-6huo.onrender.com/api/health
 ```
 
 ## 🤝 Contributing
@@ -238,4 +246,4 @@ For support, please create an issue in this repository or contact the project ma
 
 **Built with ❤️ for women's safety and community support**
 
-*Last updated: July 2025*
+*Last updated: May 2026*
