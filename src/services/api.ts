@@ -60,6 +60,24 @@ class ApiService {
     return this.parseResponse(response);
   }
 
+  static async requestPasswordReset(payload: { email: string }) {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    return this.parseResponse(response);
+  }
+
+  static async resetPassword(payload: { email: string; token: string; password: string }) {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    return this.parseResponse(response);
+  }
+
   // Safety methods
   static async createSafetyReport(reportData: {
     coordinates: [number, number];

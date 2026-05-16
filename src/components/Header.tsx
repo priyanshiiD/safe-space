@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Shield, Menu, X, User, Bell, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
@@ -6,7 +6,21 @@ import AuthModal from './AuthModal';
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [initialAuthMode, setInitialAuthMode] = useState<'login' | 'register' | 'forgot' | 'reset'>('login');
+  const [resetParams, setResetParams] = useState<{ token: string; email: string } | null>(null);
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('resetToken');
+    const email = params.get('email');
+
+    if (token && email) {
+      setResetParams({ token, email });
+      setInitialAuthMode('reset');
+      setIsAuthModalOpen(true);
+    }
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -14,6 +28,7 @@ const Header: React.FC = () => {
   };
 
   const handleAuthClick = () => {
+    setInitialAuthMode('login');
     setIsAuthModalOpen(true);
     setIsMenuOpen(false);
   };
@@ -146,7 +161,10 @@ const Header: React.FC = () => {
       {/* Auth Modal */}
       <AuthModal 
         isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={initialAuthMode}
+        resetToken={resetParams?.token}
+        resetEmail={resetParams?.email}
       />
     </>
   );

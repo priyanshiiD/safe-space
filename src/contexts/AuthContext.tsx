@@ -14,6 +14,8 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (email: string, token: string, password: string) => Promise<void>;
   register: (userData: {
     fullName: string;
     email: string;
@@ -101,6 +103,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const requestPasswordReset = async (email: string) => {
+    try {
+      await ApiService.requestPasswordReset({ email });
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      throw error;
+    }
+  };
+
+  const resetPassword = async (email: string, token: string, password: string) => {
+    try {
+      await ApiService.resetPassword({ email, token, password });
+    } catch (error) {
+      console.error('Password reset error:', error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -113,6 +133,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     token,
     login,
     register,
+    requestPasswordReset,
+    resetPassword,
     logout,
     isLoading
   };

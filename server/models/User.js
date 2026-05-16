@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  },
   emergencyContacts: [{
     name: String,
     phone: String,
