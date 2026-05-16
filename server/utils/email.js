@@ -39,6 +39,13 @@ export const sendPasswordResetEmail = async ({ to, resetUrl }) => {
     <p>If you did not request this, you can ignore this email.</p>
   `;
 
+  try {
+    await transporter.verify();
+  } catch (error) {
+    console.error('SMTP verification failed:', error);
+    throw error;
+  }
+
   const info = await transporter.sendMail({
     from,
     to,
