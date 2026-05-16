@@ -1,4 +1,10 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const normalizeApiBaseUrl = (url?: string) => {
+  const fallback = 'http://localhost:5000/api';
+  const raw = (url || fallback).trim().replace(/\/+$/, '');
+  return raw.endsWith('/api') ? raw : `${raw}/api`;
+};
+
+const API_BASE_URL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL);
 
 class ApiService {
   private static getAuthHeaders() {
@@ -7,6 +13,25 @@ class ApiService {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` })
     };
+  }
+
+  private static async parseResponse(response: Response) {
+    const contentType = response.headers.get('content-type') || '';
+
+    if (contentType.includes('application/json')) {
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed with status ${response.status}`);
+      }
+      return data;
+    }
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(text || `Request failed with status ${response.status}`);
+    }
+
+    throw new Error('Unexpected non-JSON response from server');
   }
 
   // Auth methods
@@ -23,7 +48,7 @@ class ApiService {
       headers: this.getAuthHeaders(),
       body: JSON.stringify(userData)
     });
-    return response.json();
+    return this.parseResponse(response);
   }
 
   static async login(credentials: { email: string; password: string }) {
@@ -32,7 +57,7 @@ class ApiService {
       headers: this.getAuthHeaders(),
       body: JSON.stringify(credentials)
     });
-    return response.json();
+    return this.parseResponse(response);
   }
 
   // Safety methods
@@ -49,7 +74,7 @@ class ApiService {
       headers: this.getAuthHeaders(),
       body: JSON.stringify(reportData)
     });
-    return response.json();
+    return this.parseResponse(response);
   }
 
   static async getSafetyReports(lat: number, lng: number, radius?: number) {
@@ -62,7 +87,7 @@ class ApiService {
     const response = await fetch(`${API_BASE_URL}/safety/reports?${params}`, {
       headers: this.getAuthHeaders()
     });
-    return response.json();
+    return this.parseResponse(response);
   }
 
   static async createEmergencyAlert(alertData: {
@@ -74,7 +99,7 @@ class ApiService {
       headers: this.getAuthHeaders(),
       body: JSON.stringify(alertData)
     });
-    return response.json();
+    return this.parseResponse(response);
   }
 }
 

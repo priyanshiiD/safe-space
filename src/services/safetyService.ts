@@ -1,5 +1,13 @@
 import ApiService from './api';
 
+const normalizeApiBaseUrl = (url?: string) => {
+  const fallback = 'http://localhost:5000/api';
+  const raw = (url || fallback).trim().replace(/\/+$/, '');
+  return raw.endsWith('/api') ? raw : `${raw}/api`;
+};
+
+const API_BASE_URL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL);
+
 export interface SafetyReport {
   id: string;
   userId: string;
@@ -50,7 +58,6 @@ export class SafetyService {
     isPrimary: boolean;
   }) {
     // This would be a new API endpoint to add emergency contacts
-    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
     const response = await fetch(`${API_BASE_URL}/auth/contacts`, {
       method: 'POST',
       headers: {
@@ -64,7 +71,6 @@ export class SafetyService {
 
   static async getEmergencyContacts() {
     // This would be a new API endpoint to get emergency contacts
-    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
     const response = await fetch(`${API_BASE_URL}/auth/contacts`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
