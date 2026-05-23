@@ -74,14 +74,28 @@ router.post('/emergency', auth, async (req, res) => {
 
     await alert.save();
 
+    // Log emergency alert for monitoring
+    console.log('🚨 EMERGENCY ALERT RECEIVED:', {
+      timestamp: new Date().toISOString(),
+      userId: req.userId,
+      location: {
+        latitude: coordinates[1],
+        longitude: coordinates[0]
+      },
+      address: address,
+      alertId: alert._id
+    });
+
     // Here you would integrate with SMS/notification services
     // to alert emergency contacts and authorities
+    // For now, we'll just log it for monitoring
 
     res.status(201).json({
       message: 'Emergency alert created successfully',
       alert
     });
   } catch (error) {
+    console.error('Error creating emergency alert:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -93,8 +107,33 @@ router.get('/emergency', auth, async (req, res) => {
       .populate('userId', 'fullName phone')
       .sort({ createdAt: -1 });
 
+    // Log for monitoring
+    console.log(`📊 EMERGENCY ALERTS QUERIED: ${alerts.length} active alerts`);
+
     res.json({ alerts });
   } catch (error) {
+    console.error('Error fetching emergency alerts:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Get emergency alert statistics (for monitoring)
+router.get('/emergency/stats', auth, async (req, res) => {
+  try {
+    const totalAlerts = await EmergencyAlert.countDocuments();
+    const activeAlerts = await EmergencyAlert.countDocuments({ status: 'active' });
+    const todayAlerts = await EmergencyAlert.countDocuments({
+      createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+    });
+
+    res.json({
+      totalAlerts,
+      activeAlerts,
+      todayAlerts,
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching emergency stats:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

@@ -51,6 +51,30 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
 - **GitHub** for version control and collaboration
 - **Environment Variables** for secure configuration
 
+## 🚨 Emergency Alert System
+
+### How It Works
+The emergency alert system is designed for immediate response in critical situations:
+
+1. **User Triggers Alert**: User presses the emergency button on the main page
+2. **Confirmation Dialog**: System asks for confirmation to prevent accidental triggers
+3. **Location Capture**: GPS coordinates and address are automatically captured
+4. **Alert Processing**: Alert is sent to backend and logged for monitoring
+5. **Success Feedback**: User receives confirmation that help is on the way
+
+### Developer Monitoring
+- **Monitor Dashboard**: Access `/monitor` route to view emergency alerts in real-time
+- **Console Logging**: All alerts are logged to browser console and server logs
+- **Statistics**: Track total alerts, active alerts, and daily statistics
+- **Real-time Updates**: Monitor refreshes automatically every 30 seconds
+
+### Testing the Emergency System
+1. Navigate to the emergency button section
+2. Click the "🚨 EMERGENCY" button
+3. Confirm the alert in the dialog
+4. Check browser console for alert logs
+5. Visit `/monitor` to see the alert in the dashboard
+
 ## 🚀 Getting Started
 
 ### Prerequisites
