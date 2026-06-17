@@ -12,8 +12,7 @@
 
 ## 🌟 Live Demo
 
-- **Frontend**: [https://safe-space-delta.vercel.app/](https://safe-space-delta.vercel.app/)
-- **Backend API**: [https://safe-space-6huo.onrender.com/](https://safe-space-6huo.onrender.com/)
+- [https://safe-space-delta.vercel.app/](https://safe-space-delta.vercel.app/)
 
 ## 🎯 Project Overview
 
