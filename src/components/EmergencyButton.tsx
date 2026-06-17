@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Phone, MapPin, Users, Clock, Heart, Shield } from 'lucide-react';
 import LocationEmergencyNumbers from './LocationEmergencyNumbers';
 import { SafetyService } from '../services/safetyService';
+import { useAuth } from '../contexts/AuthContext';
 
 const EmergencyButton: React.FC = () => {
   const [isEmergency, setIsEmergency] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeAlertId, setActiveAlertId] = useState<string | null>(null);
+  const [contacts, setContacts] = useState<Array<{ name: string; email: string; phone: string; relationship: string }>>([]);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', relationship: '' });
+  const locationTimerRef = useRef<number | null>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const loadContacts = async () => {
+      try {
+        const response = await SafetyService.getEmergencyContacts();
+        setContacts(response.contacts || []);
+      } catch (error) {
+        console.error('Error loading emergency contacts:', error);
+      }
+    };
+
+    if (user) {
+      loadContacts();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (locationTimerRef.current) {
+        window.clearInterval(locationTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleEmergencyClick = async () => {
     setIsEmergency(true);
@@ -33,13 +62,18 @@ const EmergencyButton: React.FC = () => {
       const address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude);
       
       // Send emergency alert
-      await SafetyService.sendEmergencyAlert(
+      const response = await SafetyService.sendEmergencyAlert(
         { 
           latitude: position.coords.latitude, 
           longitude: position.coords.longitude 
         },
         address
       );
+
+      if (response.alert?._id) {
+        setActiveAlertId(response.alert._id);
+        startLiveLocationUpdates(response.alert._id);
+      }
       
       alert('Emergency alert sent to your contacts and authorities!');
     } catch (error) {
@@ -49,6 +83,34 @@ const EmergencyButton: React.FC = () => {
       setIsLoading(false);
       setIsEmergency(false);
     }
+  };
+
+  const startLiveLocationUpdates = (alertId: string) => {
+    if (locationTimerRef.current) {
+      window.clearInterval(locationTimerRef.current);
+    }
+
+    const startedAt = Date.now();
+
+    locationTimerRef.current = window.setInterval(async () => {
+      try {
+        if (Date.now() - startedAt > 10 * 60 * 1000) {
+          window.clearInterval(locationTimerRef.current!);
+          return;
+        }
+
+        const position = await getCurrentPosition();
+        const address = await getAddressFromCoords(position.coords.latitude, position.coords.longitude);
+
+        await SafetyService.updateEmergencyLocation(
+          alertId,
+          { latitude: position.coords.latitude, longitude: position.coords.longitude },
+          address
+        );
+      } catch (error) {
+        console.error('Error updating SOS location:', error);
+      }
+    }, 30000);
   };
 
   const getCurrentPosition = (): Promise<GeolocationPosition> => {
@@ -81,6 +143,43 @@ const EmergencyButton: React.FC = () => {
   const cancelEmergency = () => {
     setIsEmergency(false);
     setCountdown(0);
+  };
+
+  const stopEmergencyAlert = async () => {
+    if (!activeAlertId) return;
+
+    try {
+      setIsLoading(true);
+      await SafetyService.resolveEmergencyAlert(activeAlertId);
+      if (locationTimerRef.current) {
+        window.clearInterval(locationTimerRef.current);
+      }
+      setActiveAlertId(null);
+      alert('SOS resolved. Stay safe!');
+    } catch (error) {
+      console.error('Error resolving SOS:', error);
+      alert('Unable to stop SOS. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddContact = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await SafetyService.addEmergencyContact({
+        name: contactForm.name,
+        email: contactForm.email,
+        phone: contactForm.phone,
+        relationship: contactForm.relationship,
+        isPrimary: contacts.length === 0
+      });
+      setContacts((prev) => [...prev, response.contact]);
+      setContactForm({ name: '', email: '', phone: '', relationship: '' });
+    } catch (error) {
+      console.error('Error adding emergency contact:', error);
+      alert('Unable to add contact. Please sign in and try again.');
+    }
   };
 
   return (
@@ -132,6 +231,18 @@ const EmergencyButton: React.FC = () => {
               >
                 {isLoading ? 'Sending...' : '🚨 EMERGENCY'}
               </button>
+
+              {activeAlertId && (
+                <div className="mt-4">
+                  <button
+                    onClick={stopEmergencyAlert}
+                    disabled={isLoading}
+                    className="bg-gray-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors"
+                  >
+                    {isLoading ? 'Stopping...' : 'Stop SOS'}
+                  </button>
+                </div>
+              )}
               
               <p className="text-sm text-gray-500 mt-4">
                 Hold for 3 seconds or tap to activate
@@ -216,6 +327,70 @@ const EmergencyButton: React.FC = () => {
         {/* Location-based Emergency numbers */}
         <div className="mt-8 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl border-2 border-orange-200">
           <LocationEmergencyNumbers showTitle={true} compact={false} />
+        </div>
+
+        {/* Emergency contacts */}
+        <div className="mt-8 p-6 bg-white rounded-2xl border-2 border-gray-100">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Emergency Contacts</h3>
+          {user ? (
+            <>
+              <form onSubmit={handleAddContact} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={contactForm.name}
+                  onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={contactForm.email}
+                  onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                  required
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  value={contactForm.phone}
+                  onChange={(event) => setContactForm({ ...contactForm, phone: event.target.value })}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Relationship"
+                  value={contactForm.relationship}
+                  onChange={(event) => setContactForm({ ...contactForm, relationship: event.target.value })}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="md:col-span-2 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white py-2 rounded-lg font-semibold"
+                >
+                  Add Contact
+                </button>
+              </form>
+              {contacts.length === 0 ? (
+                <p className="text-sm text-gray-500">No emergency contacts added yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {contacts.map((contact, index) => (
+                    <div key={`${contact.email}-${index}`} className="border border-gray-100 rounded-lg p-3">
+                      <div className="font-semibold text-gray-800">{contact.name}</div>
+                      <div className="text-sm text-gray-600">{contact.email}</div>
+                      <div className="text-sm text-gray-600">{contact.phone} • {contact.relationship}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-gray-500">Sign in to add emergency contacts.</p>
+          )}
         </div>
       </div>
     </section>

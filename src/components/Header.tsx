@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Shield, Menu, X, User, Bell, Settings, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 
@@ -53,21 +54,21 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#home" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
+            <Link to="/" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
               Home
-            </a>
-            <a href="#features" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
+            </Link>
+            <Link to="/features" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
               Features
-            </a>
-            <a href="#safety-map" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
+            </Link>
+            <Link to="/safety-map" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
               Safety Map
-            </a>
-            <a href="#community" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-              Community
-            </a>
-            <a href="#support" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
-              Support
-            </a>
+            </Link>
+            <Link to="/sos" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
+              SOS
+            </Link>
+            <Link to="/monitor" className="text-gray-700 hover:text-rose-600 font-medium transition-colors">
+              SOS Monitor
+            </Link>
           </nav>
 
           {/* Desktop Actions */}
@@ -115,21 +116,21 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <nav className="flex flex-col space-y-4">
-              <a href="#home" className="text-gray-700 hover:text-rose-600 font-medium">
+              <Link to="/" className="text-gray-700 hover:text-rose-600 font-medium">
                 Home
-              </a>
-              <a href="#features" className="text-gray-700 hover:text-rose-600 font-medium">
+              </Link>
+              <Link to="/features" className="text-gray-700 hover:text-rose-600 font-medium">
                 Features
-              </a>
-              <a href="#safety-map" className="text-gray-700 hover:text-rose-600 font-medium">
+              </Link>
+              <Link to="/safety-map" className="text-gray-700 hover:text-rose-600 font-medium">
                 Safety Map
-              </a>
-              <a href="#community" className="text-gray-700 hover:text-rose-600 font-medium">
-                Community
-              </a>
-              <a href="#support" className="text-gray-700 hover:text-rose-600 font-medium">
-                Support
-              </a>
+              </Link>
+              <Link to="/sos" className="text-gray-700 hover:text-rose-600 font-medium">
+                SOS
+              </Link>
+              <Link to="/monitor" className="text-gray-700 hover:text-rose-600 font-medium">
+                SOS Monitor
+              </Link>
                 {user ? (
                   <div className="space-y-2">
                     <div className="text-sm text-gray-700">

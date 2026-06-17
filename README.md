@@ -21,10 +21,10 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
 
 ### ✨ Key Features
 
-- 🚨 **Emergency Alert System** - Instant emergency notifications with GPS location
+- 🚨 **Emergency Alert System & Monitor** - Instant emergency notifications with GPS location, and a real-time tracking dashboard
 - 📍 **Location-Based Safety Reports** - Community-driven safety mapping
-- 👥 **Emergency Contact Management** - Trusted contacts integration
-- 🗺️ **Interactive Safety Map** - Visual safety data with real-time updates
+- 👥 **Emergency Contact Management** - Trusted contacts integration with **SendGrid** email notifications
+- 🗺️ **Interactive Safety Map** - Visual safety data with real-time updates and severity-based color coding around your location
 - 📱 **Mobile-First Design** - Optimized for mobile emergency situations
 - 🔐 **Secure Authentication** - JWT-based user authentication
 - 🌐 **Real-Time Updates** - Live safety information and alerts
@@ -43,7 +43,7 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
 - **MongoDB** with Mongoose for data persistence
 - **JWT** for secure authentication
 - **CORS** configured for cross-origin requests
-- **Railway** for cloud deployment
+- **Render** for cloud deployment
 
 ### DevOps & Deployment
 - **Vercel** for frontend hosting and CI/CD
@@ -150,7 +150,6 @@ safe-space/
 
 ### Health Check
 - `GET /api/health` - API health status
-- `GET /health` - Railway health check
 
 ## 🎨 UI/UX Features
 
@@ -235,7 +234,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **React Team** for the amazing framework
 - **Tailwind CSS** for the utility-first CSS framework
 - **Vercel** for seamless frontend deployment
-- **Railway** for reliable backend hosting
+- **Render** for reliable backend hosting
 - **MongoDB Atlas** for cloud database services
 
 ## 📞 Support

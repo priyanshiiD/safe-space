@@ -208,7 +208,7 @@ router.get('/contacts', auth, async (req, res) => {
 // Add emergency contact
 router.post('/contacts', auth, async (req, res) => {
   try {
-    const { name, phone, relationship, isPrimary } = req.body;
+    const { name, email, phone, relationship, isPrimary } = req.body;
 
     const user = await User.findById(req.userId);
     if (!user) {
@@ -225,6 +225,7 @@ router.post('/contacts', auth, async (req, res) => {
     // Add new contact
     user.emergencyContacts.push({
       name,
+      email,
       phone,
       relationship,
       isPrimary: isPrimary || false

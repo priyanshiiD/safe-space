@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   emergencyContacts: [{
     name: String,
+    email: String,
     phone: String,
     relationship: String,
     isPrimary: Boolean

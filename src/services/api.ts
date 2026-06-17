@@ -119,6 +119,38 @@ class ApiService {
     });
     return this.parseResponse(response);
   }
+
+  static async updateEmergencyLocation(alertId: string, payload: {
+    coordinates: [number, number];
+    address?: string;
+  }) {
+    const response = await fetch(`${API_BASE_URL}/safety/emergency/${alertId}/location`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(payload)
+    });
+    return this.parseResponse(response);
+  }
+
+  static async getEmergencyAlerts() {
+    const response = await fetch(`${API_BASE_URL}/safety/emergency`, {
+      headers: this.getAuthHeaders()
+    });
+    return this.parseResponse(response);
+  }
+
+  static async getEmergencyAlertsPublic() {
+    const response = await fetch(`${API_BASE_URL}/safety/emergency/public`);
+    return this.parseResponse(response);
+  }
+
+  static async resolveEmergencyAlert(alertId: string) {
+    const response = await fetch(`${API_BASE_URL}/safety/emergency/${alertId}/resolve`, {
+      method: 'PATCH',
+      headers: this.getAuthHeaders()
+    });
+    return this.parseResponse(response);
+  }
 }
 
 export default ApiService;

@@ -1,6 +1,8 @@
 import express from 'express';
 import SafetyReport from '../models/SafetyReport.js';
 import EmergencyAlert from '../models/EmergencyAlert.js';
+import User from '../models/User.js';
+import { sendEmergencyAlertEmail } from '../utils/sendgrid.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -61,7 +63,17 @@ router.get('/reports', async (req, res) => {
 // Create emergency alert
 router.post('/emergency', auth, async (req, res) => {
   try {
+    console.log('SOS create request received', {
+      userId: req.userId,
+      hasBody: Boolean(req.body)
+    });
     const { coordinates, address } = req.body;
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
     const alert = new EmergencyAlert({
       userId: req.userId,
@@ -69,10 +81,50 @@ router.post('/emergency', auth, async (req, res) => {
         type: 'Point',
         coordinates: coordinates
       },
-      address
+      address,
+      locationHistory: [{
+        coordinates
+      }],
+      lastLocationAt: new Date()
     });
 
     await alert.save();
+
+    const contactEmails = (user.emergencyContacts || [])
+      .filter((contact) => contact.email)
+      .map((contact) => ({
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone
+      }));
+
+    if (contactEmails.length > 0) {
+      const mapsLink = `https://www.google.com/maps?q=${coordinates[1]},${coordinates[0]}`;
+      const subject = 'SOS Alert: Immediate assistance needed';
+      const text = `${user.fullName} has triggered an SOS alert.\n\nLocation: ${mapsLink}\n\nAddress: ${address}`;
+      const html = `
+        <p><strong>${user.fullName}</strong> has triggered an SOS alert.</p>
+        <p>Address: ${address}</p>
+        <p><a href="${mapsLink}">View live location</a></p>
+      `;
+
+      for (const contact of contactEmails) {
+        await sendEmergencyAlertEmail({
+          to: contact.email,
+          subject,
+          text,
+          html
+        });
+      }
+
+      alert.contactsNotified = contactEmails.map((contact) => ({
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        notifiedAt: new Date()
+      }));
+      await alert.save();
+    }
 
     // Here you would integrate with SMS/notification services
     // to alert emergency contacts and authorities
@@ -81,6 +133,37 @@ router.post('/emergency', auth, async (req, res) => {
       message: 'Emergency alert created successfully',
       alert
     });
+  } catch (error) {
+    console.error('SOS create error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Update emergency location
+router.put('/emergency/:id/location', auth, async (req, res) => {
+  try {
+    const { coordinates, address } = req.body;
+    const { id } = req.params;
+
+    const alert = await EmergencyAlert.findOne({ _id: id, userId: req.userId, status: 'active' });
+
+    if (!alert) {
+      return res.status(404).json({ message: 'Active alert not found' });
+    }
+
+    alert.location = {
+      type: 'Point',
+      coordinates
+    };
+    if (address) {
+      alert.address = address;
+    }
+    alert.locationHistory.push({ coordinates });
+    alert.lastLocationAt = new Date();
+
+    await alert.save();
+
+    res.json({ message: 'Location updated', alert });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -94,6 +177,39 @@ router.get('/emergency', auth, async (req, res) => {
       .sort({ createdAt: -1 });
 
     res.json({ alerts });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Public SOS monitor feed
+router.get('/emergency/public', async (req, res) => {
+  try {
+    const alerts = await EmergencyAlert.find({ status: 'active' })
+      .select('address status lastLocationAt createdAt location')
+      .sort({ createdAt: -1 });
+
+    res.json({ alerts });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Stop/resolution of an active SOS
+router.patch('/emergency/:id/resolve', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const alert = await EmergencyAlert.findOne({ _id: id, userId: req.userId, status: 'active' });
+
+    if (!alert) {
+      return res.status(404).json({ message: 'Active alert not found' });
+    }
+
+    alert.status = 'resolved';
+    await alert.save();
+
+    res.json({ message: 'SOS resolved', alert });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

@@ -1,23 +1,24 @@
 import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import EmergencyButton from './components/EmergencyButton';
-import SafetyMap from './components/SafetyMap';
-import Footer from './components/Footer';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import MonitorPage from './pages/MonitorPage';
+import SosPage from './pages/SosPage';
+import SafetyMapPage from './pages/SafetyMapPage';
+import FeaturesPage from './pages/FeaturesPage';
 import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
     <AuthProvider>
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-red-50">
-      <Header />
-      <Hero />
-      <EmergencyButton />
-      <Features />
-      <SafetyMap />
-      <Footer />
-    </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/sos" element={<SosPage />} />
+          <Route path="/safety-map" element={<SafetyMapPage />} />
+          <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/monitor" element={<MonitorPage />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

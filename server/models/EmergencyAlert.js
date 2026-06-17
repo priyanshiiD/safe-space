@@ -26,8 +26,22 @@ const emergencyAlertSchema = new mongoose.Schema({
     enum: ['active', 'resolved', 'false_alarm'],
     default: 'active'
   },
+  locationHistory: [{
+    coordinates: {
+      type: [Number],
+      required: true
+    },
+    recordedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  lastLocationAt: {
+    type: Date
+  },
   contactsNotified: [{
     name: String,
+    email: String,
     phone: String,
     notifiedAt: Date
   }],

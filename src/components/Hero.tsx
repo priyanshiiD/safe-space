@@ -1,18 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Users, MapPin, Phone, Heart, Star, Flower2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Hero: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // Scroll to features section
-    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+    navigate('/features');
   };
 
   const handleWatchDemo = () => {
-    // Show demo modal or scroll to emergency button
-    document.getElementById('emergency-button')?.scrollIntoView({ behavior: 'smooth' });
+    navigate('/sos');
   };
 
   return (

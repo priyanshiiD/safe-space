@@ -27,6 +27,7 @@ export interface SafetyReport {
 export interface EmergencyContact {
   id: string;
   name: string;
+  email: string;
   phone: string;
   relationship: string;
   isPrimary: boolean;
@@ -53,6 +54,7 @@ export class SafetyService {
   // Emergency contact management
   static async addEmergencyContact(contact: {
     name: string;
+    email: string;
     phone: string;
     relationship: string;
     isPrimary: boolean;
@@ -77,6 +79,25 @@ export class SafetyService {
       }
     });
     return response.json();
+  }
+
+  static async updateEmergencyLocation(alertId: string, location: { latitude: number; longitude: number }, address?: string) {
+    return await ApiService.updateEmergencyLocation(alertId, {
+      coordinates: [location.longitude, location.latitude],
+      address
+    });
+  }
+
+  static async getEmergencyAlerts() {
+    return await ApiService.getEmergencyAlerts();
+  }
+
+  static async getEmergencyAlertsPublic() {
+    return await ApiService.getEmergencyAlertsPublic();
+  }
+
+  static async resolveEmergencyAlert(alertId: string) {
+    return await ApiService.resolveEmergencyAlert(alertId);
   }
 
   // Send emergency alert
