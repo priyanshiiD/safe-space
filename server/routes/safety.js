@@ -108,22 +108,28 @@ router.post('/emergency', auth, async (req, res) => {
         <p><a href="${mapsLink}">View live location</a></p>
       `;
 
-      for (const contact of contactEmails) {
-        await sendEmergencyAlertEmail({
-          to: contact.email,
-          subject,
-          text,
-          html
-        });
-      }
+      try {
+        for (const contact of contactEmails) {
+          await sendEmergencyAlertEmail({
+            to: contact.email,
+            subject,
+            text,
+            html
+          });
+        }
 
-      alert.contactsNotified = contactEmails.map((contact) => ({
-        name: contact.name,
-        email: contact.email,
-        phone: contact.phone,
-        notifiedAt: new Date()
-      }));
-      await alert.save();
+        alert.contactsNotified = contactEmails.map((contact) => ({
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone,
+          notifiedAt: new Date()
+        }));
+        await alert.save();
+      } catch (emailError) {
+        console.error('Failed to send emergency emails via SendGrid:', emailError.response?.body || emailError.message);
+        // We catch the error but DO NOT throw it, so the SOS alert is still created successfully
+        // on the platform even if the email notifications fail to send.
+      }
     }
 
     // Here you would integrate with SMS/notification services
