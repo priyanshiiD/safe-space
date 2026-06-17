@@ -69,13 +69,13 @@ const Hero: React.FC = () => {
               onClick={handleGetStarted}
               className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              🌸 Get Started Now
+              🌸 Explore Features
             </button>
             <button 
               onClick={handleWatchDemo}
               className="border-2 border-rose-500 text-rose-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-rose-500 hover:text-white transition-all"
             >
-              Watch Demo 📱
+              Test SOS System 🚨
             </button>
           </div>
         </div>

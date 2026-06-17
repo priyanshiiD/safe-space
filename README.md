@@ -85,9 +85,10 @@ SafeSpace is a full-stack women's safety application designed to provide immedia
    JWT_SECRET=your_jwt_secret_key
    SMTP_HOST=your_smtp_host
    SMTP_PORT=587
-   SMTP_USER=your_smtp_user
-   SMTP_PASS=your_smtp_password
-   SMTP_FROM="SafeSpace <no-reply@example.com>"
+   SMTP_USER=apikey
+   SMTP_PASS=your_sendgrid_api_key
+   SMTP_FROM=SafeSpace <no-reply@example.com>
+   SENDGRID_API_KEY=your_sendgrid_api_key
    APP_BASE_URL=http://localhost:5173
    PORT=5000
    NODE_ENV=development
@@ -245,4 +246,4 @@ For support, please create an issue in this repository or contact the project ma
 
 **Built with ❤️ for women's safety and community support**
 
-*Last updated: May 2026*
+*Last updated: June 2026*

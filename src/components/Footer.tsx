@@ -39,20 +39,6 @@ const Footer: React.FC = () => {
               <li><a href="#home" className="text-gray-300 hover:text-pink-300 transition-colors">Home</a></li>
               <li><a href="#features" className="text-gray-300 hover:text-pink-300 transition-colors">Features</a></li>
               <li><a href="#safety-map" className="text-gray-300 hover:text-pink-300 transition-colors">Safety Map</a></li>
-              <li><a href="#community" className="text-gray-300 hover:text-pink-300 transition-colors">Community</a></li>
-              <li><a href="#support" className="text-gray-300 hover:text-pink-300 transition-colors">Support</a></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6 text-purple-300">Support</h4>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-purple-300 transition-colors">Help Center</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-300 transition-colors">Safety Tips</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-300 transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-300 transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-300 transition-colors">Contact Us</a></li>
             </ul>
           </div>
 

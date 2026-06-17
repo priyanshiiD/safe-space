@@ -17,74 +17,42 @@ import { useAuth } from '../contexts/AuthContext';
 const Features: React.FC = () => {
   const { user } = useAuth();
 
-  const handleDownload = () => {
-    // Scroll to emergency button to show the main feature
-    document.getElementById('emergency-button')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const features = [
     {
       icon: <Shield size={32} className="text-rose-600" />,
       title: "Real-time Location Sharing",
-      description: "Share your location with trusted contacts automatically when you feel unsafe",
+      description: "Share your exact live location automatically when you trigger an emergency",
       color: "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200",
       decorative: "🌸"
     },
     {
       icon: <Phone size={32} className="text-red-600" />,
       title: "Emergency SOS",
-      description: "One-tap emergency button that alerts authorities and your emergency contacts",
+      description: "One-tap emergency button that instantly alerts your emergency network",
       color: "bg-gradient-to-br from-red-50 to-rose-50 border-red-200",
       decorative: "🚨"
     },
     {
-      icon: <Users size={32} className="text-purple-600" />,
-      title: "Community Network",
-      description: "Connect with other women in your area for mutual support and safety",
-      color: "bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200",
-      decorative: "👭"
-    },
-    {
       icon: <MapPin size={32} className="text-pink-600" />,
       title: "Safety Heat Map",
-      description: "View real-time safety reports and avoid potentially dangerous areas",
+      description: "View real-time safety reports and community-sourced danger zones on an interactive map",
       color: "bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200",
       decorative: "🗺️"
     },
     {
-      icon: <MessageCircle size={32} className="text-indigo-600" />,
-      title: "Anonymous Reporting",
-      description: "Report incidents anonymously to help other women stay safe",
-      color: "bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200",
-      decorative: "📝"
-    },
-    {
-      icon: <Eye size={32} className="text-teal-600" />,
-      title: "Safe Route Planning",
-      description: "Get the safest route recommendations based on community data",
-      color: "bg-gradient-to-br from-teal-50 to-cyan-50 border-teal-200",
-      decorative: "🛣️"
-    },
-    {
-      icon: <Lock size={32} className="text-yellow-600" />,
-      title: "Secure Messaging",
-      description: "End-to-end encrypted messaging with your safety network",
-      color: "bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200",
-      decorative: "🔐"
+      icon: <Users size={32} className="text-purple-600" />,
+      title: "Trusted Contacts",
+      description: "Manage your personal network of primary and secondary emergency contacts",
+      color: "bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200",
+      decorative: "👭"
     },
     {
       icon: <Bell size={32} className="text-blue-600" />,
-      title: "Smart Notifications",
-      description: "Intelligent alerts based on your location and safety patterns",
+      title: "Instant Email Alerts",
+      description: "Automatic high-priority email notifications sent to your contacts via SendGrid",
       color: "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200",
-      decorative: "🔔"
-    },
-    {
-      icon: <Heart size={32} className="text-rose-600" />,
-      title: "24/7 Support",
-      description: "Access to trained counselors and support staff anytime you need help",
-      color: "bg-gradient-to-br from-rose-50 to-red-50 border-rose-200",
-      decorative: "💝"
+      decorative: "✉️"
     }
   ];
 
@@ -161,10 +129,10 @@ const Features: React.FC = () => {
                 Join thousands of women who trust SafeSpace for their daily safety needs.
               </p>
               <button 
-                onClick={handleDownload}
+                onClick={() => document.getElementById('emergency-button')?.scrollIntoView({ behavior: 'smooth' })}
                 className="bg-white text-rose-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-colors shadow-lg text-lg"
               >
-                🌸 Download SafeSpace
+                🚨 Try Emergency SOS
               </button>
             </div>
           </div>
