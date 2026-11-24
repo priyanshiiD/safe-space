@@ -1,56 +1,52 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Shield, 
   MapPin, 
   Users, 
-  MessageCircle, 
   Phone, 
-  Eye,
-  Lock,
   Bell,
   Heart,
   Flower2,
   Star
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 
 const Features: React.FC = () => {
-  const { user } = useAuth();
-
+  const navigate = useNavigate();
 
   const features = [
     {
       icon: <Shield size={32} className="text-rose-600" />,
-      title: "Real-time Location Sharing",
-      description: "Share your exact live location automatically when you trigger an emergency",
+      title: "Location in SOS Alerts",
+      description: "Include your current coordinates in an SOS request when browser location access is allowed.",
       color: "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200",
       decorative: "🌸"
     },
     {
       icon: <Phone size={32} className="text-red-600" />,
       title: "Emergency SOS",
-      description: "One-tap emergency button that instantly alerts your emergency network",
+      description: "Create an SOS alert for saved contacts when the backend and email service are configured.",
       color: "bg-gradient-to-br from-red-50 to-rose-50 border-red-200",
       decorative: "🚨"
     },
     {
       icon: <MapPin size={32} className="text-pink-600" />,
       title: "Safety Heat Map",
-      description: "View real-time safety reports and community-sourced danger zones on an interactive map",
+      description: "Explore community safety reports and location-based markers on an interactive map.",
       color: "bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200",
       decorative: "🗺️"
     },
     {
       icon: <Users size={32} className="text-purple-600" />,
       title: "Trusted Contacts",
-      description: "Manage your personal network of primary and secondary emergency contacts",
+      description: "Add and remove the emergency contacts saved to your account.",
       color: "bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200",
       decorative: "👭"
     },
     {
       icon: <Bell size={32} className="text-blue-600" />,
-      title: "Instant Email Alerts",
-      description: "Automatic high-priority email notifications sent to your contacts via SendGrid",
+      title: "Email Alert Workflow",
+      description: "The backend can email saved contacts when SendGrid is configured.",
       color: "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200",
       decorative: "✉️"
     }
@@ -74,11 +70,10 @@ const Features: React.FC = () => {
             </div>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-            Comprehensive Safety Features
+            Safety Tools in the Demo
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Every feature is designed with women's safety in mind, providing multiple layers 
-            of protection and community support.
+            Explore the app's map, SOS, and trusted-contact workflows. These tools are a project demo, not a substitute for local emergency services.
           </p>
         </div>
 
@@ -123,16 +118,16 @@ const Features: React.FC = () => {
                 </div>
               </div>
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                Ready to Feel Safer?
+                Explore the SOS Workflow
               </h3>
               <p className="text-lg mb-6 opacity-90">
-                Join thousands of women who trust SafeSpace for their daily safety needs.
+                See how the app creates an SOS alert using your location and saved contacts.
               </p>
               <button 
-                onClick={() => document.getElementById('emergency-button')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => navigate('/sos')}
                 className="bg-white text-rose-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-colors shadow-lg text-lg"
               >
-                🚨 Try Emergency SOS
+                🚨 Open SOS Page
               </button>
             </div>
           </div>

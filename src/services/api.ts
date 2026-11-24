@@ -151,6 +151,15 @@ class ApiService {
     });
     return this.parseResponse(response);
   }
+
+  // Contacts
+  static async deleteEmergencyContact(contactId: string) {
+    const response = await fetch(`${API_BASE_URL}/auth/contacts/${contactId}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders()
+    });
+    return this.parseResponse(response);
+  }
 }
 
 export default ApiService;

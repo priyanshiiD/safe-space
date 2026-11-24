@@ -56,12 +56,11 @@ const Hero: React.FC = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto leading-relaxed">
-            SafeSpace empowers women with real-time safety tools, community support, 
-            and emergency assistance at your fingertips.
+            Explore a safety map, trusted-contact tools, and an SOS alert workflow in one web app.
           </p>
           
           <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
-            A comprehensive safety platform designed with women's needs in mind
+            A project prototype for practical, location-aware safety workflows.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -75,67 +74,67 @@ const Hero: React.FC = () => {
               onClick={handleWatchDemo}
               className="border-2 border-rose-500 text-rose-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-rose-500 hover:text-white transition-all"
             >
-              Test SOS System 🚨
+              Explore SOS Workflow 🚨
             </button>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Project capabilities */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
           <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-rose-400">
             <div className="flex justify-center mb-4">
               <div className="p-3 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full">
-                <Users size={32} className="text-rose-600" />
+                <MapPin size={32} className="text-rose-600" />
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">50K+</h3>
-            <p className="text-gray-600">Women Protected</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Community Map</h3>
+            <p className="text-gray-600">Browse reported safety information</p>
           </div>
           
           <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-pink-400">
             <div className="flex justify-center mb-4">
               <div className="p-3 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full">
-                <MapPin size={32} className="text-pink-600" />
+                <Shield size={32} className="text-pink-600" />
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">25+</h3>
-            <p className="text-gray-600">Cities Covered</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">SOS Workflow</h3>
+            <p className="text-gray-600">Create an alert with your location</p>
           </div>
           
           <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-purple-400">
             <div className="flex justify-center mb-4">
               <div className="p-3 bg-gradient-to-r from-purple-100 to-rose-100 rounded-full">
-                <Phone size={32} className="text-purple-600" />
+                <Users size={32} className="text-purple-600" />
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">24/7</h3>
-            <p className="text-gray-600">Emergency Support</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Trusted Contacts</h3>
+            <p className="text-gray-600">Manage saved emergency contacts</p>
           </div>
           
           <div className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-yellow-400">
             <div className="flex justify-center mb-4">
               <div className="p-3 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full">
-                <Shield size={32} className="text-yellow-600" />
+                <Phone size={32} className="text-yellow-600" />
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-gray-800 mb-2">99.9%</h3>
-            <p className="text-gray-600">Response Rate</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Local Resources</h3>
+            <p className="text-gray-600">View location-based emergency numbers</p>
           </div>
         </div>
 
-        {/* Trust indicators */}
+        {/* Demo disclaimer */}
         <div className="bg-gradient-to-r from-rose-100 via-pink-100 to-purple-100 rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
-            🌸 Trusted by Women Worldwide
+            🌸 A Safety-Focused Project Prototype
           </h3>
           <p className="text-gray-600 mb-6">
-            Built with care, designed for safety - Understanding women's unique safety challenges
+            SafeSpace is a demo project, not a monitored emergency service. Alert delivery depends on location permission, a working backend, and email configuration.
           </p>
           <div className="flex justify-center space-x-8 text-sm text-gray-500">
-            <span>🔒 Complete Privacy</span>
-            <span>🌐 Global Support</span>
-            <span>👮‍♀️ Authority Integration</span>
-            <span>🏥 Healthcare Access</span>
+            <span>🗺️ Community Reports</span>
+            <span>📍 Location-Aware Tools</span>
+            <span>👥 Contact Management</span>
+            <span>✉️ Email Alert Workflow</span>
           </div>
         </div>
       </div>

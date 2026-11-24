@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Phone, MapPin, Users, Clock, Heart, Shield } from 'lucide-react';
+import { AlertTriangle, Phone, MapPin, Users, Clock, Heart, Shield, Trash2 } from 'lucide-react';
 import LocationEmergencyNumbers from './LocationEmergencyNumbers';
 import { SafetyService } from '../services/safetyService';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,7 +9,7 @@ const EmergencyButton: React.FC = () => {
   const [countdown, setCountdown] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [activeAlertId, setActiveAlertId] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<Array<{ name: string; email: string; phone: string; relationship: string }>>([]);
+  const [contacts, setContacts] = useState<Array<{ _id?: string; name: string; email: string; phone: string; relationship: string }>>([]);
   const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', relationship: '' });
   const locationTimerRef = useRef<number | null>(null);
   const { user } = useAuth();
@@ -220,8 +220,7 @@ const EmergencyButton: React.FC = () => {
               </h3>
               
               <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Press the emergency button to instantly alert your trusted contacts, 
-                share your location, and connect with emergency services.
+                Start an SOS alert for your saved contacts and include your location when browser access is allowed. This demo does not contact emergency services.
               </p>
               
               <button
@@ -245,7 +244,7 @@ const EmergencyButton: React.FC = () => {
               )}
               
               <p className="text-sm text-gray-500 mt-4">
-                Hold for 3 seconds or tap to activate
+                A 5-second countdown starts. Cancel before it sends if needed.
               </p>
             </div>
           ) : (
@@ -288,10 +287,10 @@ const EmergencyButton: React.FC = () => {
               </div>
             </div>
             <h4 className="text-lg font-semibold text-gray-800 mb-2">
-              Instant Alerts
+              Email to Saved Contacts
             </h4>
             <p className="text-gray-600 text-sm">
-              Automatically contacts emergency services and your trusted contacts
+              Emails saved contacts when the backend and email service are configured
             </p>
           </div>
           
@@ -305,7 +304,7 @@ const EmergencyButton: React.FC = () => {
               Location Sharing
             </h4>
             <p className="text-gray-600 text-sm">
-              Shares your exact location with emergency contacts in real-time
+              Includes your current location in the alert and attempts periodic updates
             </p>
           </div>
           
@@ -319,7 +318,7 @@ const EmergencyButton: React.FC = () => {
               Community Alert
             </h4>
             <p className="text-gray-600 text-sm">
-              Notifies nearby SafeSpace users who can provide immediate help
+              Browse community safety reports for additional context
             </p>
           </div>
         </div>
@@ -379,10 +378,33 @@ const EmergencyButton: React.FC = () => {
               ) : (
                 <div className="space-y-3">
                   {contacts.map((contact, index) => (
-                    <div key={`${contact.email}-${index}`} className="border border-gray-100 rounded-lg p-3">
-                      <div className="font-semibold text-gray-800">{contact.name}</div>
-                      <div className="text-sm text-gray-600">{contact.email}</div>
-                      <div className="text-sm text-gray-600">{contact.phone} • {contact.relationship}</div>
+                    <div key={contact._id ?? `${contact.email}-${index}`} className="flex items-center justify-between border border-gray-100 rounded-lg p-3">
+                      <div>
+                        <div className="font-semibold text-gray-800">{contact.name}</div>
+                        <div className="text-sm text-gray-600">{contact.email}</div>
+                        <div className="text-sm text-gray-600">{contact.phone} • {contact.relationship}</div>
+                      </div>
+                      {contact._id && (
+                        <button
+                          onClick={async () => {
+                            const contactId = contact._id;
+                            if (!contactId || !window.confirm(`Remove ${contact.name} from emergency contacts?`)) return;
+
+                            try {
+                              await SafetyService.deleteEmergencyContact(contactId);
+                              setContacts(prev => prev.filter(c => c._id !== contactId));
+                            } catch (error) {
+                              console.error('Error removing emergency contact:', error);
+                              alert(error instanceof Error ? error.message : 'Failed to remove contact. Please try again.');
+                            }
+                          }}
+                          className="ml-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
+                          title="Remove contact"
+                          aria-label={`Remove ${contact.name} from emergency contacts`}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>

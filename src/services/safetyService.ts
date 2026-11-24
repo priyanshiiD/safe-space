@@ -107,4 +107,9 @@ export class SafetyService {
       address
     });
   }
+
+  // Delete emergency contact
+  static async deleteEmergencyContact(contactId: string) {
+    return await ApiService.deleteEmergencyContact(contactId);
+  }
 }
