@@ -11,6 +11,23 @@ const router = express.Router();
 router.post('/reports', auth, async (req, res) => {
   try {
     const { coordinates, address, reportType, description, severity, isAnonymous } = req.body;
+    const validReportTypes = ['harassment', 'unsafe_area', 'well_lit', 'safe_zone', 'emergency'];
+    const validSeverities = ['low', 'medium', 'high'];
+
+    if (
+      !Array.isArray(coordinates) ||
+      coordinates.length !== 2 ||
+      !coordinates.every(Number.isFinite) ||
+      coordinates[0] < -180 || coordinates[0] > 180 ||
+      coordinates[1] < -90 || coordinates[1] > 90 ||
+      typeof address !== 'string' || !address.trim() ||
+      typeof description !== 'string' || description.trim().length < 5 || description.trim().length > 500 ||
+      !validReportTypes.includes(reportType) ||
+      !validSeverities.includes(severity) ||
+      (isAnonymous !== undefined && typeof isAnonymous !== 'boolean')
+    ) {
+      return res.status(400).json({ message: 'Please provide a valid incident report and location.' });
+    }
 
     const report = new SafetyReport({
       userId: req.userId,
@@ -18,15 +35,14 @@ router.post('/reports', auth, async (req, res) => {
         type: 'Point',
         coordinates: coordinates // [longitude, latitude]
       },
-      address,
+      address: address.trim(),
       reportType,
-      description,
+      description: description.trim(),
       severity,
-      isAnonymous
+      isAnonymous: isAnonymous === true
     });
 
     await report.save();
-    await report.populate('userId', 'fullName');
 
     res.status(201).json({
       message: 'Safety report created successfully',
@@ -41,20 +57,37 @@ router.post('/reports', auth, async (req, res) => {
 router.get('/reports', async (req, res) => {
   try {
     const { lat, lng, radius = 5000 } = req.query; // radius in meters
+    const latitude = Number(lat);
+    const longitude = Number(lng);
+    const radiusMeters = Number(radius);
+
+    if (
+      !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+      !Number.isFinite(longitude) || longitude < -180 || longitude > 180 ||
+      !Number.isFinite(radiusMeters) || radiusMeters <= 0
+    ) {
+      return res.status(400).json({ message: 'Valid latitude, longitude, and radius are required.' });
+    }
 
     const reports = await SafetyReport.find({
       location: {
         $near: {
           $geometry: {
             type: 'Point',
-            coordinates: [parseFloat(lng), parseFloat(lat)]
+            coordinates: [longitude, latitude]
           },
-          $maxDistance: parseInt(radius)
+          $maxDistance: radiusMeters
         }
       }
     }).populate('userId', 'fullName').sort({ createdAt: -1 });
 
-    res.json({ reports });
+    res.json({
+      reports: reports.map(report => {
+        const result = report.toObject();
+        if (result.isAnonymous) delete result.userId;
+        return result;
+      })
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
