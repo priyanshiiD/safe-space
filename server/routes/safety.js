@@ -93,6 +93,71 @@ router.get('/reports', async (req, res) => {
   }
 });
 
+// Search OpenStreetMap for nearby help locations
+router.get('/nearby', async (req, res) => {
+  const latitude = Number(req.query.lat);
+  const longitude = Number(req.query.lng);
+  const radiusMeters = Number(req.query.radius ?? 3000);
+  const allowedRadii = [2000, 3000, 5000, 8000];
+
+  if (
+    !Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+    !Number.isFinite(longitude) || longitude < -180 || longitude > 180 ||
+    !allowedRadii.includes(radiusMeters)
+  ) {
+    return res.status(400).json({ message: 'Valid latitude, longitude, and radius are required.' });
+  }
+
+  const query = `
+    [out:json][timeout:20];
+    (
+      nwr["amenity"="police"](around:${radiusMeters},${latitude},${longitude});
+      nwr["amenity"="hospital"](around:${radiusMeters},${latitude},${longitude});
+      nwr["amenity"="pharmacy"](around:${radiusMeters},${latitude},${longitude});
+      nwr["amenity"="fire_station"](around:${radiusMeters},${latitude},${longitude});
+      nwr["amenity"="clinic"](around:${radiusMeters},${latitude},${longitude});
+      nwr["amenity"="doctors"](around:${radiusMeters},${latitude},${longitude});
+    );
+    out center tags;
+  `;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+
+  try {
+    const response = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'User-Agent': 'SafeSpace/1.0'
+      },
+      body: `data=${encodeURIComponent(query)}`,
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      console.error(`Nearby services provider returned HTTP ${response.status}`);
+      return res.status(502).json({ message: 'Nearby services provider is temporarily unavailable.' });
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data.elements)) {
+      console.error('Nearby services provider returned an invalid response.');
+      return res.status(502).json({ message: 'Nearby services provider returned an invalid response.' });
+    }
+
+    res.json({ elements: data.elements });
+  } catch (error) {
+    console.error('Nearby services provider request failed:', error);
+    const message = error.name === 'AbortError'
+      ? 'Nearby services request timed out.'
+      : 'Nearby services provider is temporarily unavailable.';
+    res.status(502).json({ message });
+  } finally {
+    clearTimeout(timeout);
+  }
+});
+
 // Create emergency alert
 router.post('/emergency', auth, async (req, res) => {
   try {

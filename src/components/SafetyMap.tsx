@@ -271,7 +271,7 @@ const SafetyMap: React.FC = () => {
     setClickMode('none');
   }, [clickMode]);
 
-  /* Overpass API — find real nearby help */
+  /* Search the backend proxy for nearby OpenStreetMap help locations */
   const findNearbyHelp = async () => {
     const center = customStart ?? userLocation;
     setShowHelp(true);
@@ -284,27 +284,8 @@ const SafetyMap: React.FC = () => {
 
     setHelpLoading(true);
     const radiusM = nearbyRadiusKm * 1000;
-    const query = `
-      [out:json][timeout:20];
-      (
-        nwr["amenity"="police"](around:${radiusM},${center.lat},${center.lng});
-        nwr["amenity"="hospital"](around:${radiusM},${center.lat},${center.lng});
-        nwr["amenity"="pharmacy"](around:${radiusM},${center.lat},${center.lng});
-        nwr["amenity"="fire_station"](around:${radiusM},${center.lat},${center.lng});
-        nwr["amenity"="clinic"](around:${radiusM},${center.lat},${center.lng});
-        nwr["amenity"="doctors"](around:${radiusM},${center.lat},${center.lng});
-      );
-      out center tags;
-    `;
     try {
-      const res = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body: `data=${encodeURIComponent(query)}`
-      });
-      if (!res.ok) throw new Error(`Nearby services request failed with status ${res.status}`);
-
-      const data = await res.json() as { elements?: OverpassElement[] };
+      const data = await SafetyService.getNearbyHelp(center.lat, center.lng, radiusM) as { elements?: OverpassElement[] };
       const places = (data.elements ?? [])
         .map((el): HelpPlace | null => {
           const lat = el.lat ?? el.center?.lat;
@@ -329,7 +310,7 @@ const SafetyMap: React.FC = () => {
     } catch (error) {
       console.error('Nearby services search failed:', error);
       setNearbyHelp([]);
-      setHelpError('Could not load nearby services. Please try again later.');
+      setHelpError(error instanceof Error ? error.message : 'Could not load nearby services. Please try again later.');
     } finally { setHelpLoading(false); }
   };
 

@@ -51,6 +51,10 @@ export class SafetyService {
     return await ApiService.getSafetyReports(latitude, longitude, radius);
   }
 
+  static async getNearbyHelp(latitude: number, longitude: number, radius: number) {
+    return await ApiService.getNearbyHelp(latitude, longitude, radius);
+  }
+
   // Emergency contact management
   static async addEmergencyContact(contact: {
     name: string;

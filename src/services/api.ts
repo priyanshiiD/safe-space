@@ -108,6 +108,17 @@ class ApiService {
     return this.parseResponse(response);
   }
 
+  static async getNearbyHelp(lat: number, lng: number, radius: number) {
+    const params = new URLSearchParams({
+      lat: lat.toString(),
+      lng: lng.toString(),
+      radius: radius.toString()
+    });
+
+    const response = await fetch(`${API_BASE_URL}/safety/nearby?${params}`);
+    return this.parseResponse(response);
+  }
+
   static async createEmergencyAlert(alertData: {
     coordinates: [number, number];
     address: string;
